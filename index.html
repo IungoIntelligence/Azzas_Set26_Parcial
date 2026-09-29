@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Jan/25 a Set/26 — Análise por Marca</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',Arial,sans-serif;background:#F1ECE0;color:#221E18;line-height:1.6;padding:32px 24px;}
+  .container{max-width:1320px;margin:0 auto;}
+  header{background:#15130F;color:#F1ECE0;border-radius:16px;padding:40px 36px;margin-bottom:28px;}
+  header .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#C7B98C;font-weight:600;margin-bottom:12px;}
+  header h1{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:32px;line-height:1.15;}
+  header .meta{margin-top:12px;color:#8A8172;font-size:13px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
+  .kpi-card{background:#fff;border:1px solid rgba(166,148,99,0.35);border-radius:12px;padding:20px 22px;}
+  .kpi-card .label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#A69463;font-weight:700;margin-bottom:8px;}
+  .kpi-card .value{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:24px;color:#15130F;line-height:1.1;}
+  .kpi-card .delta{font-size:12.5px;margin-top:6px;font-weight:600;}
+  .delta.up{color:#2d7a3e;} .delta.down{color:#b23b2e;} .delta.neutral{color:#8A8172;}
+  .chart-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-bottom:18px;}
+  .chart-card{background:#fff;border:1px solid rgba(166,148,99,0.35);border-radius:12px;padding:22px 24px;}
+  .chart-card.full{grid-column:span 12;}
+  .chart-card.half{grid-column:span 6;}
+  .chart-card.third{grid-column:span 4;}
+  .chart-card.two-thirds{grid-column:span 8;}
+  .chart-card h2{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:16px;color:#15130F;margin-bottom:4px;}
+  .chart-card .subtitle{font-size:12px;color:#8A8172;margin-bottom:14px;}
+  .chart-wrap{position:relative;height:320px;}
+  .chart-wrap.tall{height:400px;}
+  .chart-wrap.short{height:260px;}
+  .insight-box{background:#15130F;color:#F1ECE0;border-radius:12px;padding:22px 26px;margin-bottom:20px;}
+  .insight-box h3{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:16px;color:#C7B98C;margin-bottom:10px;}
+  .insight-box ul{list-style:none;padding:0;}
+  .insight-box li{font-size:13px;color:#D8D2C2;padding:5px 0 5px 22px;position:relative;}
+  .insight-box li:before{content:"▸";position:absolute;left:0;color:#C7B98C;}
+  .table-wrap{background:#fff;border:1px solid rgba(166,148,99,0.35);border-radius:12px;padding:20px 24px;margin-bottom:18px;overflow-x:auto;}
+  .table-wrap h2{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:16px;color:#15130F;margin-bottom:12px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;padding:10px 8px;border-bottom:2px solid rgba(166,148,99,0.35);color:#A69463;font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+  td{padding:10px 8px;border-bottom:1px solid rgba(166,148,99,0.15);}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  tr:last-child td{border-bottom:none;font-weight:700;}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;}
+  .tag.up{background:#e6f4ea;color:#2d7a3e;}
+  .tag.down{background:#fde8e5;color:#b23b2e;}
+  .tag.flat{background:#F1ECE0;color:#8A8172;}
+  .section-title{font-family:'Poppins',sans-serif;font-style:italic;font-weight:800;font-size:20px;color:#15130F;margin:32px 0 18px 0;padding-bottom:10px;border-bottom:2px solid rgba(166,148,99,0.35);}
+  footer{text-align:center;padding:24px;color:#8A8172;font-size:12px;}
+  @media (max-width:900px){
+    .chart-card.half,.chart-card.third,.chart-card.two-thirds{grid-column:span 12;}
+    header h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="eyebrow">Dashboard Executivo • Recorte Jan/25 — Set/26</div>
+  <h1>Performance Comercial — Últimos 21 Meses</h1>
+  <div class="meta">6 marcas • Jan/25 a Set/26 • Foco em tendência recente e mix atual</div>
+</header>
+
+<!-- KPIs -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="label">Total Jan/25 – Set/26</div>
+    <div class="value">R$ 20,13 mi</div>
+    <div class="delta neutral">21 meses analisados</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Média mensal</div>
+    <div class="value">R$ 958k</div>
+    <div class="delta neutral">Vendas Iungo</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Melhor mês do período</div>
+    <div class="value">Jan/25</div>
+    <div class="delta up">▲ R$ 2,41 mi</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Set/26 (mês atual)</div>
+    <div class="value">R$ 1,10 mi</div>
+    <div class="delta up">▲ 2º melhor mês de 2026</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Q3/26 vs Q2/26</div>
+    <div class="value">+30,9%</div>
+    <div class="delta up">▲ Retomada em curso</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Marca líder (período)</div>
+    <div class="value">FARM</div>
+    <div class="delta neutral">R$ 10,35 mi • 51,4%</div>
+  </div>
+</div>
+
+<!-- INSIGHT BOX -->
+<div class="insight-box">
+  <h3>Leitura executiva — Jan/25 a Set/26</h3>
+  <ul>
+    <li><strong>Padrão de montanha russa:</strong> pico Q1/25 (R$ 5,15 mi) → vale Q3/25 (R$ 1,85 mi) → pico Q4/25 BF (R$ 3,07 mi) → vale Q2/26 (R$ 1,68 mi) → retomada Q3/26 (R$ 2,20 mi).</li>
+    <li><strong>ANIMALE colapsou e deu sinal de vida:</strong> de R$ 972k/mês (jan/25) para R$ 10k-20k (abr-jul/26). Set/26 voltou a R$ 166k — pode ser reativação ou pico isolado.</li>
+    <li><strong>Mix premiumizando:</strong> OFF + CRIS + MARIA saíram de ~15% do mix (Q1/25) para ~40% (Q3/26). Menos dependência de FARM.</li>
+    <li><strong>Set/26 sinaliza recuperação:</strong> R$ 1,10 mi, segundo melhor mês do ano (atrás apenas de jan/26 com R$ 1,17 mi). Puxado por FARM (R$ 576k) e ANIMALE (R$ 166k, sinal de reativação).</li>
+    <li><strong>Anomalia recorrente em junho:</strong> tanto jun/25 (R$ 85k) quanto jun/26 (R$ 125k) foram os piores meses de FARM — padrão a investigar.</li>
+  </ul>
+</div>
+
+<!-- TABELA TRIMESTRAL -->
+<div class="table-wrap">
+  <h2>Evolução trimestral (R$ mil)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Trimestre</th>
+        <th class="num">FARM</th>
+        <th class="num">ANIMALE</th>
+        <th class="num">OFF PREM.</th>
+        <th class="num">CRIS BARROS</th>
+        <th class="num">MARIA FILÓ</th>
+        <th class="num">FÁBULA</th>
+        <th class="num">TOTAL</th>
+        <th class="num">Var. trim</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-trim"></tbody>
+  </table>
+</div>
+
+<!-- GRÁFICO 1: Evolução mensal -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>Evolução mensal — Vendas Iungo por marca</h2>
+    <div class="subtitle">Jan/25 a Set/26 • 21 meses • valores em R$ mil</div>
+    <div class="chart-wrap tall"><canvas id="evolucao"></canvas></div>
+  </div>
+</div>
+
+<!-- GRÁFICO 2: Total mensal + 3: Mix atual -->
+<div class="chart-grid">
+  <div class="chart-card two-thirds">
+    <h2>Total mensal consolidado</h2>
+    <div class="subtitle">Soma de todas as marcas • R$ mil</div>
+    <div class="chart-wrap"><canvas id="totalMensal"></canvas></div>
+  </div>
+  <div class="chart-card third">
+    <h2>Mix Q3/26 (jul-set)</h2>
+    <div class="subtitle">Participação no último trimestre</div>
+    <div class="chart-wrap"><canvas id="mixQ3"></canvas></div>
+  </div>
+</div>
+
+<!-- GRÁFICO 4: Trimestral + 5: Variação trim/trim -->
+<div class="chart-grid">
+  <div class="chart-card half">
+    <h2>Total por trimestre</h2>
+    <div class="subtitle">R$ mil • leitura de tendência macro</div>
+    <div class="chart-wrap"><canvas id="trimestral"></canvas></div>
+  </div>
+  <div class="chart-card half">
+    <h2>Variação trim/trim (%)</h2>
+    <div class="subtitle">Crescimento/queda trimestral</div>
+    <div class="chart-wrap"><canvas id="varTrim"></canvas></div>
+  </div>
+</div>
+
+<!-- GRÁFICO 6: Totais por marca no período -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>Contribuição total por marca (Jan/25 – Set/26)</h2>
+    <div class="subtitle">R$ mil acumulados no período</div>
+    <div class="chart-wrap"><canvas id="totalMarca"></canvas></div>
+  </div>
+</div>
+
+<!-- SEÇÃO: DETALHAMENTO POR MARCA -->
+<div class="section-title">Detalhamento Mensal por Marca</div>
+
+<!-- FARM -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>FARM — Detalhamento mensal</h2>
+    <div class="subtitle">Marca âncora (51% do mix) • anomalias de junho sinalizadas</div>
+    <div class="chart-wrap"><canvas id="farmDet"></canvas></div>
+  </div>
+</div>
+
+<!-- ANIMALE -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>ANIMALE — Detalhamento mensal</h2>
+    <div class="subtitle">Colapso a partir de mai/26 • sinal de reativação em set/26</div>
+    <div class="chart-wrap"><canvas id="animaleDet"></canvas></div>
+  </div>
+</div>
+
+<!-- OFF PREMIUM -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>OFF PREMIUM — Detalhamento mensal</h2>
+    <div class="subtitle">Crescimento consistente • pico em nov/25 (Black Friday)</div>
+    <div class="chart-wrap"><canvas id="offDet"></canvas></div>
+  </div>
+</div>
+
+<!-- CRIS BARROS -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>CRIS BARROS — Detalhamento mensal</h2>
+    <div class="subtitle">Alta volatilidade • zerou em ago/25 • pico em jan/26</div>
+    <div class="chart-wrap"><canvas id="crisDet"></canvas></div>
+  </div>
+</div>
+
+<!-- MARIA FILÓ -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>MARIA FILÓ — Detalhamento mensal</h2>
+    <div class="subtitle">Pico em nov/25 (BF) • queda em ago/25 • recuperação em 2026</div>
+    <div class="chart-wrap"><canvas id="mariaDet"></canvas></div>
+  </div>
+</div>
+
+<!-- FÁBULA -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>FÁBULA — Detalhamento mensal</h2>
+    <div class="subtitle">Queda estrutural contínua • sem anomalias pontuais</div>
+    <div class="chart-wrap"><canvas id="fabulaDet"></canvas></div>
+  </div>
+</div>
+
+<!-- GRÁFICO 8: Marcas em crescimento -->
+<div class="chart-grid">
+  <div class="chart-card full">
+    <h2>Marcas em crescimento — OFF, CRIS e MARIA FILÓ</h2>
+    <div class="subtitle">Evolução mensal das 3 marcas que estão premiumizando o mix • R$ mil</div>
+    <div class="chart-wrap"><canvas id="crescimento"></canvas></div>
+  </div>
+</div>
+
+</div>
+
+<footer>Dashboard Jan/25–Set/26 • Dados de Vendas Iungo • Gerado em Set/2026</footer>
+
+<script>
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#221E18';
+Chart.defaults.borderColor = 'rgba(166,148,99,0.2)';
+
+const cores = {
+  farm:'#A69463', off:'#15130F', cris:'#C7B98C',
+  maria:'#6b5a3e', ani:'#b23b2e', fab:'#2d7a3e'
+};
+
+const labels = ['Jan/25','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez','Jan/26','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set'];
+
+const farm = [1181.9,977.1,835.8,783.7,664.0,85.0,477.5,223.8,298.6,222.9,638.2,634.6,531.4,477.7,503.9,390.6,133.2,125.0,201.9,387.9,576.0];
+const off = [61.5,44.2,100.5,62.0,107.3,88.7,64.7,63.8,55.6,88.9,385.6,264.9,174.6,150.0,227.7,126.8,103.9,130.4,55.9,99.2,124.0];
+const cris = [60.3,82.3,32.4,48.9,44.6,13.4,1.8,0,20.9,21.6,71.1,36.0,110.4,18.0,107.9,115.7,93.5,77.8,53.1,50.7,88.5];
+const maria = [157.8,50.9,52.4,51.9,77.1,80.9,82.3,19.2,41.8,39.8,238.4,157.2,225.3,42.4,151.9,75.4,51.4,106.0,116.3,83.5,127.8];
+const ani = [972.5,239.2,210.7,202.2,315.1,452.4,243.5,98.4,43.9,43.6,114.9,54.2,110.2,93.5,102.1,30.1,19.1,78.9,10.3,19.2,166.4];
+const fab = [35.8,43.4,14.6,19.6,25.8,36.5,21.6,16.3,16.2,9.0,41.2,11.5,19.8,15.4,9.9,6.7,8.4,5.1,13.0,7.8,17.6];
+
+const total = farm.map((v,i)=>v+off[i]+cris[i]+maria[i]+ani[i]+fab[i]);
+
+// Tabela trimestral
+const trims = [
+  {label:'Q1/25',idx:[0,1,2]},
+  {label:'Q2/25',idx:[3,4,5]},
+  {label:'Q3/25',idx:[6,7,8]},
+  {label:'Q4/25',idx:[9,10,11]},
+  {label:'Q1/26',idx:[12,13,14]},
+  {label:'Q2/26',idx:[15,16,17]},
+  {label:'Q3/26',idx:[18,19,20]}
+];
+const sumTrim = (arr,idx)=>idx.reduce((a,i)=>a+arr[i],0);
+const tbody = document.getElementById('tbody-trim');
+let prev = null;
+trims.forEach((t,i)=>{
+  const vals = [farm,ani,off,cris,maria,fab].map(a=>sumTrim(a,t.idx));
+  const tot = vals.reduce((a,b)=>a+b,0);
+  const varPct = prev ? ((tot-prev)/prev*100) : null;
+  const tag = varPct===null ? '<span class="tag flat">—</span>'
+    : varPct>=0 ? `<span class="tag up">+${varPct.toFixed(1)}%</span>`
+    : `<span class="tag down">${varPct.toFixed(1)}%</span>`;
+  const row = `<tr>
+    <td><strong>${t.label}</strong></td>
+    ${vals.map(v=>`<td class="num">${v.toFixed(1)}</td>`).join('')}
+    <td class="num"><strong>${tot.toFixed(1)}</strong></td>
+    <td class="num">${tag}</td>
+  </tr>`;
+  tbody.insertAdjacentHTML('beforeend', row);
+  prev = tot;
+});
+const totFarm = trims.reduce((a,t)=>a+sumTrim(farm,t.idx),0);
+const totAni = trims.reduce((a,t)=>a+sumTrim(ani,t.idx),0);
+const totOff = trims.reduce((a,t)=>a+sumTrim(off,t.idx),0);
+const totCris = trims.reduce((a,t)=>a+sumTrim(cris,t.idx),0);
+const totMaria = trims.reduce((a,t)=>a+sumTrim(maria,t.idx),0);
+const totFab = trims.reduce((a,t)=>a+sumTrim(fab,t.idx),0);
+const totGeral = totFarm+totAni+totOff+totCris+totMaria+totFab;
+tbody.insertAdjacentHTML('beforeend', `<tr>
+  <td>TOTAL</td>
+  <td class="num">${totFarm.toFixed(1)}</td>
+  <td class="num">${totAni.toFixed(1)}</td>
+  <td class="num">${totOff.toFixed(1)}</td>
+  <td class="num">${totCris.toFixed(1)}</td>
+  <td class="num">${totMaria.toFixed(1)}</td>
+  <td class="num">${totFab.toFixed(1)}</td>
+  <td class="num">${totGeral.toFixed(1)}</td>
+  <td></td>
+</tr>`);
+
+// 1. Evolução mensal (stacked area)
+new Chart(document.getElementById('evolucao'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[
+      {label:'FARM',data:farm,borderColor:cores.farm,backgroundColor:'rgba(166,148,99,0.18)',borderWidth:2,tension:.3,fill:true,pointRadius:2},
+      {label:'ANIMALE',data:ani,borderColor:cores.ani,backgroundColor:'rgba(178,59,46,0.12)',borderWidth:2,tension:.3,fill:true,pointRadius:2},
+      {label:'OFF PREMIUM',data:off,borderColor:cores.off,backgroundColor:'rgba(21,19,15,0.1)',borderWidth:2,tension:.3,fill:true,pointRadius:2},
+      {label:'CRIS BARROS',data:cris,borderColor:cores.cris,backgroundColor:'rgba(199,185,140,0.15)',borderWidth:2,tension:.3,fill:true,pointRadius:2},
+      {label:'MARIA FILÓ',data:maria,borderColor:cores.maria,backgroundColor:'rgba(107,90,62,0.1)',borderWidth:2,tension:.3,fill:true,pointRadius:2},
+      {label:'FÁBULA',data:fab,borderColor:cores.fab,backgroundColor:'rgba(45,122,62,0.1)',borderWidth:2,tension:.3,fill:true,pointRadius:2}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': R$ '+c.parsed.y.toFixed(1)+'k'}}
+    },
+    scales:{
+      y:{stacked:true,ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{stacked:true,grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// 2. Total mensal
+new Chart(document.getElementById('totalMensal'),{
+  type:'bar',
+  data:{
+    labels,
+    datasets:[{
+      data:total,
+      backgroundColor:total.map((v,i)=>{
+        if(i===0) return '#2d7a3e';
+        if(i===12) return '#2d7a3e';
+        if(i===20) return '#A69463';
+        if(i>=9&&i<=11) return 'rgba(166,148,99,0.7)';
+        return 'rgba(166,148,99,0.45)';
+      }),
+      borderRadius:4
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Total: R$ '+c.parsed.y.toFixed(1)+'k'}}},
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}}
+    }
+  }
+});
+
+// 3. Mix Q3/26
+const mixQ3 = {
+  FARM:sumTrim(farm,[18,19,20]),
+  ANIMALE:sumTrim(ani,[18,19,20]),
+  'OFF PREMIUM':sumTrim(off,[18,19,20]),
+  'CRIS BARROS':sumTrim(cris,[18,19,20]),
+  'MARIA FILÓ':sumTrim(maria,[18,19,20]),
+  FÁBULA:sumTrim(fab,[18,19,20])
+};
+new Chart(document.getElementById('mixQ3'),{
+  type:'doughnut',
+  data:{
+    labels:Object.keys(mixQ3),
+    datasets:[{data:Object.values(mixQ3),backgroundColor:[cores.farm,cores.ani,cores.off,cores.cris,cores.maria,cores.fab],borderWidth:2,borderColor:'#fff'}]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},
+      tooltip:{callbacks:{label:c=>{const t=Object.values(mixQ3).reduce((a,b)=>a+b,0);return c.label+': R$ '+c.parsed.toFixed(0)+'k ('+((c.parsed/t)*100).toFixed(1)+'%)';}}}
+    }
+  }
+});
+
+// 4. Trimestral
+const trimLabels = trims.map(t=>t.label);
+const trimTotals = trims.map(t=>sumTrim(total,t.idx));
+new Chart(document.getElementById('trimestral'),{
+  type:'bar',
+  data:{
+    labels:trimLabels,
+    datasets:[{
+      data:trimTotals,
+      backgroundColor:trimTotals.map((v,i)=>{
+        if(i===0) return '#2d7a3e';
+        if(i===2) return '#b23b2e';
+        if(i===5) return '#b23b2e';
+        if(i===6) return '#2d7a3e';
+        return 'rgba(166,148,99,0.7)';
+      }),
+      borderRadius:6
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R$ '+c.parsed.y.toFixed(1)+'k'}}},
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// 5. Variação trim/trim
+const varTrims = trimTotals.map((v,i)=>i===0?0:((v-trimTotals[i-1])/trimTotals[i-1])*100);
+new Chart(document.getElementById('varTrim'),{
+  type:'bar',
+  data:{
+    labels:trimLabels,
+    datasets:[{
+      data:varTrims,
+      backgroundColor:varTrims.map(v=>v>=0?'#2d7a3e':'#b23b2e'),
+      borderRadius:6
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(1)+'%'}}},
+    scales:{
+      y:{ticks:{callback:v=>(v>=0?'+':'')+v+'%'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// 6. Total por marca
+const totaisMarca = [
+  {nome:'FARM',val:totFarm,c:cores.farm},
+  {nome:'ANIMALE',val:totAni,c:cores.ani},
+  {nome:'OFF PREMIUM',val:totOff,c:cores.off},
+  {nome:'MARIA FILÓ',val:totMaria,c:cores.maria},
+  {nome:'CRIS BARROS',val:totCris,c:cores.cris},
+  {nome:'FÁBULA',val:totFab,c:cores.fab}
+];
+new Chart(document.getElementById('totalMarca'),{
+  type:'bar',
+  data:{
+    labels:totaisMarca.map(m=>m.nome),
+    datasets:[{
+      data:totaisMarca.map(m=>m.val),
+      backgroundColor:totaisMarca.map(m=>m.c),
+      borderRadius:6
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R$ '+c.parsed.x.toFixed(1)+'k ('+((c.parsed.x/totGeral)*100).toFixed(1)+'%)'}}},
+    scales:{
+      x:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      y:{grid:{display:false}}
+    }
+  }
+});
+
+// DETALHAMENTO POR MARCA
+
+// FARM
+new Chart(document.getElementById('farmDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'FARM',
+      data:farm,
+      borderColor:cores.farm,
+      backgroundColor:'rgba(166,148,99,0.15)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:farm.map((v,i)=>(i===5||i===17)?7:3),
+      pointBackgroundColor:farm.map((v,i)=>(i===5||i===17)?'#b23b2e':cores.farm),
+      pointBorderColor:farm.map((v,i)=>(i===5||i===17)?'#b23b2e':cores.farm)
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>'FARM: R$ '+c.parsed.y.toFixed(1)+'k'+(c.dataIndex===5||c.dataIndex===17?' ⚠️ anomalia':'')}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// ANIMALE
+new Chart(document.getElementById('animaleDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'ANIMALE',
+      data:ani,
+      borderColor:cores.ani,
+      backgroundColor:'rgba(178,59,46,0.12)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:ani.map((v,i)=>(i>=16&&v<50)?7:(i===20?7:3)),
+      pointBackgroundColor:ani.map((v,i)=>(i>=16&&v<50)?'#b23b2e':(i===20?'#2d7a3e':cores.ani)),
+      pointBorderColor:ani.map((v,i)=>(i>=16&&v<50)?'#b23b2e':(i===20?'#2d7a3e':cores.ani))
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>{
+        const i=c.dataIndex;
+        let note='';
+        if(i>=16&&i<20&&ani[i]<50) note=' ⚠️ colapso';
+        if(i===20) note=' ▲ reativação?';
+        return 'ANIMALE: R$ '+c.parsed.y.toFixed(1)+'k'+note;
+      }}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// OFF PREMIUM
+new Chart(document.getElementById('offDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'OFF PREMIUM',
+      data:off,
+      borderColor:cores.off,
+      backgroundColor:'rgba(21,19,15,0.08)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:off.map((v,i)=>i===10?7:3),
+      pointBackgroundColor:off.map((v,i)=>i===10?'#2d7a3e':cores.off),
+      pointBorderColor:off.map((v,i)=>i===10?'#2d7a3e':cores.off)
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>'OFF PREMIUM: R$ '+c.parsed.y.toFixed(1)+'k'+(c.dataIndex===10?' ▲ pico BF':'')}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// CRIS BARROS
+new Chart(document.getElementById('crisDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'CRIS BARROS',
+      data:cris,
+      borderColor:cores.cris,
+      backgroundColor:'rgba(199,185,140,0.15)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:cris.map((v,i)=>(i===7||i===12)?7:3),
+      pointBackgroundColor:cris.map((v,i)=>(i===7?'#b23b2e':(i===12?'#2d7a3e':cores.cris))),
+      pointBorderColor:cris.map((v,i)=>(i===7?'#b23b2e':(i===12?'#2d7a3e':cores.cris)))
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>{
+        const i=c.dataIndex;
+        let note='';
+        if(i===7) note=' ⚠️ zerou';
+        if(i===12) note=' ▲ pico';
+        return 'CRIS BARROS: R$ '+c.parsed.y.toFixed(1)+'k'+note;
+      }}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// MARIA FILÓ
+new Chart(document.getElementById('mariaDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'MARIA FILÓ',
+      data:maria,
+      borderColor:cores.maria,
+      backgroundColor:'rgba(107,90,62,0.1)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:maria.map((v,i)=>(i===7||i===10)?7:3),
+      pointBackgroundColor:maria.map((v,i)=>(i===7?'#b23b2e':(i===10?'#2d7a3e':cores.maria))),
+      pointBorderColor:maria.map((v,i)=>(i===7?'#b23b2e':(i===10?'#2d7a3e':cores.maria)))
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>{
+        const i=c.dataIndex;
+        let note='';
+        if(i===7) note=' ⚠️ queda';
+        if(i===10) note=' ▲ pico BF';
+        return 'MARIA FILÓ: R$ '+c.parsed.y.toFixed(1)+'k'+note;
+      }}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// FÁBULA
+new Chart(document.getElementById('fabulaDet'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[{
+      label:'FÁBULA',
+      data:fab,
+      borderColor:cores.fab,
+      backgroundColor:'rgba(45,122,62,0.1)',
+      borderWidth:2.5,
+      tension:.3,
+      fill:true,
+      pointRadius:3
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>'FÁBULA: R$ '+c.parsed.y.toFixed(1)+'k'}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// Marcas em crescimento
+new Chart(document.getElementById('crescimento'),{
+  type:'line',
+  data:{
+    labels,
+    datasets:[
+      {label:'OFF PREMIUM',data:off,borderColor:cores.off,backgroundColor:'rgba(21,19,15,0.08)',borderWidth:2.5,tension:.3,fill:true,pointRadius:3},
+      {label:'CRIS BARROS',data:cris,borderColor:cores.cris,backgroundColor:'rgba(199,185,140,0.12)',borderWidth:2.5,tension:.3,fill:true,pointRadius:3},
+      {label:'MARIA FILÓ',data:maria,borderColor:cores.maria,backgroundColor:'rgba(107,90,62,0.08)',borderWidth:2.5,tension:.3,fill:true,pointRadius:3}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': R$ '+c.parsed.y.toFixed(1)+'k'}}
+    },
+    scales:{
+      y:{ticks:{callback:v=>'R$ '+v+'k'},grid:{color:'rgba(166,148,99,0.1)'}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
